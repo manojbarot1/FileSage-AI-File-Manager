@@ -7,7 +7,7 @@ import warnings
 warnings.filterwarnings("ignore", message=".*LibreSSL.*")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-import sys, os, math
+import sys, os, math, platform
 from datetime import datetime
 from typing import Optional, List, Dict
 
@@ -78,7 +78,7 @@ FOLDER_COLORS = [C["folder_a"], C["folder_b"], C["folder_c"], C["folder_d"],
 STYLE = f"""
 QMainWindow {{ background:{C['bg']}; }}
 QWidget     {{ background:{C['bg']}; color:{C['text']};
-               font-family:"Helvetica Neue","Helvetica","Arial",sans-serif;
+               font-family:"Helvetica Neue","Segoe UI","Ubuntu","Arial",sans-serif;
                font-size:13px; }}
 
 /* ── Sidebar ── */
@@ -259,7 +259,7 @@ QProgressBar::chunk {{
 /* ── TextEdit ── */
 QTextEdit {{
     background:{C['bg']}; border:1px solid {C['border']}; border-radius:8px;
-    color:{C['text2']}; font-family:"Menlo","Courier New",monospace;
+    color:{C['text2']}; font-family:"Menlo","Consolas","DejaVu Sans Mono","Courier New",monospace;
     font-size:11px; padding:8px;
 }}
 
@@ -388,7 +388,7 @@ class FolderCard(QFrame):
         # File count badge
         cnt = QLabel(str(d.get("file_count", 0)))
         cnt.setStyleSheet(
-            f"background:{color}22; color:{color}; font-family:'Menlo','Courier New',monospace;"
+            f"background:{color}22; color:{color}; font-family:'Menlo','Consolas','DejaVu Sans Mono','Courier New',monospace;"
             f"font-size:10px; font-weight:700; border:1px solid {color}44;"
             f"border-radius:10px; padding:1px 7px;"
         )
@@ -475,7 +475,7 @@ class FileRowWidget(QFrame):
         n.setStyleSheet(f"font-weight:600; color:{C['text']}; background:transparent; font-size:12.5px;")
         info.addWidget(n)
         p = QLabel(f"…/{f.get('parent_folder','')}/")
-        p.setStyleSheet(f"font-family:'Menlo','Courier New',monospace; font-size:10px; color:{C['text3']}; background:transparent;")
+        p.setStyleSheet(f"font-family:'Menlo','Consolas','DejaVu Sans Mono','Courier New',monospace; font-size:10px; color:{C['text3']}; background:transparent;")
         info.addWidget(p)
         lo.addLayout(info, 1)
 
@@ -487,7 +487,7 @@ class FileRowWidget(QFrame):
             sg.addWidget(arr)
             sp = QLabel(f.get("ai_suggested_path",""))
             sp.setStyleSheet(
-                f"font-family:'Menlo','Courier New',monospace; font-size:10.5px;"
+                f"font-family:'Menlo','Consolas','DejaVu Sans Mono','Courier New',monospace; font-size:10.5px;"
                 f"color:{C['green']}; background:transparent;"
             )
             sg.addWidget(sp)
@@ -501,7 +501,7 @@ class FileRowWidget(QFrame):
         # Right
         right = QVBoxLayout(); right.setSpacing(3); right.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         sz = QLabel(core.fmt_size(f.get("size_bytes",0)))
-        sz.setStyleSheet(f"font-family:'Menlo','Courier New',monospace; font-size:10px; color:{C['muted']}; background:transparent;")
+        sz.setStyleSheet(f"font-family:'Menlo','Consolas','DejaVu Sans Mono','Courier New',monospace; font-size:10px; color:{C['muted']}; background:transparent;")
         right.addWidget(sz, 0, Qt.AlignmentFlag.AlignRight)
         if f.get("moved"):
             b = self._badge("moved", C["green"], C["green_dim"])
@@ -771,7 +771,7 @@ class FileManagerPage(QWidget):
         ic = QVBoxLayout(); ic.setSpacing(1)
         self.path_lbl = QLabel("—")
         self.path_lbl.setStyleSheet(
-            f"font-family:'Menlo','Courier New',monospace; font-size:12px;"
+            f"font-family:'Menlo','Consolas','DejaVu Sans Mono','Courier New',monospace; font-size:12px;"
             f"color:{C['primary_hi']}; background:transparent; font-weight:600;"
         )
         self.meta_lbl = QLabel("")
@@ -832,7 +832,7 @@ class FileManagerPage(QWidget):
         all_lbl.mousePressEvent = lambda _: self.sel_all_cb.setChecked(not self.sel_all_cb.isChecked())
         abl.addWidget(all_lbl)
         self.sel_lbl = QLabel("0 selected")
-        self.sel_lbl.setStyleSheet(f"font-family:'Menlo','Courier New',monospace; font-size:12px; color:{C['text3']}; background:transparent;")
+        self.sel_lbl.setStyleSheet(f"font-family:'Menlo','Consolas','DejaVu Sans Mono','Courier New',monospace; font-size:12px; color:{C['text3']}; background:transparent;")
         abl.addWidget(self.sel_lbl)
         abl.addStretch()
         self.preview_btn = QPushButton("⊙  Preview Move"); self.preview_btn.setObjectName("btn_green")
@@ -1105,7 +1105,7 @@ class AIAnalysisPage(QWidget):
         self.prog_title.setStyleSheet(f"font-size:13px; font-weight:700; color:{C['white']}; background:transparent;")
         ph.addWidget(self.prog_title); ph.addStretch()
         self.prog_batch = QLabel("")
-        self.prog_batch.setStyleSheet(f"font-family:'Menlo','Courier New',monospace; font-size:11px; color:{C['text3']}; background:transparent;")
+        self.prog_batch.setStyleSheet(f"font-family:'Menlo','Consolas','DejaVu Sans Mono','Courier New',monospace; font-size:11px; color:{C['text3']}; background:transparent;")
         ph.addWidget(self.prog_batch)
         pfl.addLayout(ph)
 
@@ -1283,8 +1283,17 @@ class ActivityPage(QWidget):
 
     def _reveal(self, row, _):
         item = self.table.item(row, 2)
-        if item and item.text():
-            os.system(f'open -R "{item.text()}"')
+        if not item or not item.text():
+            return
+        path = item.text()
+        system = platform.system()
+        if system == "Darwin":
+            os.system(f'open -R "{path}"')
+        elif system == "Windows":
+            os.system(f'explorer /select,"{path}"')
+        else:  # Linux / other
+            folder = os.path.dirname(path)
+            os.system(f'xdg-open "{folder}"')
 
 
 # ── SettingsPage ───────────────────────────────────────────────────────────────
@@ -1317,7 +1326,7 @@ class SettingsPage(QWidget):
 
         root.addWidget(section("Storage"))
         db_lbl = QLabel(core.DB_PATH)
-        db_lbl.setStyleSheet(f"font-family:'Menlo','Courier New',monospace; font-size:11.5px; color:{C['primary_hi']}; background:transparent;")
+        db_lbl.setStyleSheet(f"font-family:'Menlo','Consolas','DejaVu Sans Mono','Courier New',monospace; font-size:11.5px; color:{C['primary_hi']}; background:transparent;")
         root.addWidget(row("Database location", db_lbl))
 
         clear_btn = QPushButton("⚠  Clear All Data"); clear_btn.setObjectName("btn_danger")
@@ -1729,11 +1738,18 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("FileSage"); app.setStyle("Fusion")
 
-    # Set a real font Qt can find on macOS — avoids the "alias" warning
+    # Pick the best available system font per platform
     from PyQt6.QtGui import QFont
-    app_font = QFont("Helvetica Neue")
+    _system = platform.system()
+    if _system == "Darwin":
+        _font_name = "Helvetica Neue"
+    elif _system == "Windows":
+        _font_name = "Segoe UI"
+    else:  # Linux
+        _font_name = "Ubuntu"
+    app_font = QFont(_font_name)
     if not app_font.exactMatch():
-        app_font = QFont("Helvetica")
+        app_font = QFont("Arial")
     app_font.setPointSize(13)
     app.setFont(app_font)
 

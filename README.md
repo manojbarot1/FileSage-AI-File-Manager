@@ -2,14 +2,16 @@
 
 # ◈ FileSage
 
-### AI-Powered File Intelligence for macOS
+### AI-Powered File Intelligence
 
-**Organize your files intelligently using local Ollama, ChatGPT, or Claude — all running natively on your Mac.**
+**Organize your files intelligently using local Ollama, ChatGPT, or Claude.**
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)](https://python.org)
 [![PyQt6](https://img.shields.io/badge/PyQt6-6.6%2B-green?logo=qt&logoColor=white)](https://riverbankcomputing.com/software/pyqt/)
 [![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
 [![macOS](https://img.shields.io/badge/macOS-12%2B-black?logo=apple&logoColor=white)](https://apple.com/macos)
+[![Windows](https://img.shields.io/badge/Windows-10%2B-0078d4?logo=windows&logoColor=white)](https://microsoft.com/windows)
+[![Linux](https://img.shields.io/badge/Linux-Ubuntu%20%2F%20Fedora%20%2F%20Arch-orange?logo=linux&logoColor=white)](https://kernel.org)
 
 ![FileSage Screenshot](docs/screenshot.png)
 
@@ -21,9 +23,19 @@
 
 ## What is FileSage?
 
-FileSage is a native macOS desktop application that uses AI to analyze your files and suggest intelligent folder structures. It reads file names, content previews, and folder context — then recommends where each file should live. You review the suggestions, select what to move, and FileSage does the rest.
+FileSage is a native desktop application that uses AI to analyze your files and suggest intelligent folder structures. It reads file names, content previews, and folder context — then recommends where each file should live. You review the suggestions, select what to move, and FileSage does the rest.
 
-**Everything runs locally.** When using Ollama, no file data ever leaves your Mac.
+**When using Ollama, everything runs locally — no file data ever leaves your machine.**
+
+---
+
+## Platform Support
+
+| Platform | Status | Launcher | Notes |
+|---|---|---|---|
+| **macOS** 12+ | ✅ Fully supported | `./run.sh` | Native feel, Menlo font, Reveal in Finder |
+| **Windows** 10/11 | ✅ Fully supported | `run.bat` | Segoe UI font, Reveal in Explorer |
+| **Linux** (Ubuntu, Fedora, Arch) | ✅ Fully supported | `./run.sh` | Ubuntu/DejaVu font, opens parent folder |
 
 ---
 
@@ -34,7 +46,7 @@ FileSage is a native macOS desktop application that uses AI to analyze your file
 | 📊 **Dashboard** | Overview of all sessions, folder stats, file counts, storage usage |
 | 📁 **File Manager** | List & grid view, filter by status, select all, bulk move |
 | 🤖 **AI Analysis** | Streaming real-time analysis with live progress log |
-| 🕐 **Activity Log** | Full history of every file moved, with Reveal in Finder |
+| 🕐 **Activity Log** | Full history of every file moved, reveal in file browser |
 | ⚙️ **Settings** | Default folder, database location, cache management |
 | 🦙 **Multi-Provider** | Ollama (local), ChatGPT (OpenAI), Claude (Anthropic) |
 | 💾 **Persistent Cache** | Sessions remembered across launches via SQLite |
@@ -45,11 +57,12 @@ FileSage is a native macOS desktop application that uses AI to analyze your file
 
 ## Requirements
 
-| Requirement | Details |
-|---|---|
-| macOS | 12 Monterey or later |
-| Python | 3.9+ (3.11+ recommended) |
-| AI Provider | One of: Ollama (local), OpenAI API key, or Anthropic API key |
+| Requirement | macOS | Windows | Linux |
+|---|---|---|---|
+| Python | 3.9+ | 3.9+ | 3.9+ |
+| Install method | `brew install python` | [python.org](https://python.org/downloads) | `apt install python3` |
+| AI (local) | Ollama | Ollama | Ollama |
+| AI (cloud) | OpenAI / Anthropic key | OpenAI / Anthropic key | OpenAI / Anthropic key |
 
 ---
 
@@ -58,31 +71,46 @@ FileSage is a native macOS desktop application that uses AI to analyze your file
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/filesage.git
-cd filesage
+git clone https://github.com/manojbarot1/FileSage-AI-File-Manager.git
+cd FileSage-AI-File-Manager
 ```
 
 ### 2. Install Ollama (recommended — fully local, free)
 
+**macOS / Linux:**
 ```bash
-# Install from https://ollama.ai  or via Homebrew:
+# Download from https://ollama.ai  or via Homebrew:
 brew install ollama
 
-# Pull Gemma4 — recommended for FileSage:
-ollama pull gemma4
+ollama pull gemma4    # recommended model
+ollama serve          # start (auto-starts if you have the menu bar app)
+```
 
-# Start Ollama (launches automatically if you have the menu bar app):
-ollama serve
+**Windows:**
+```
+1. Download the installer from https://ollama.ai
+2. Run OllamaSetup.exe — it installs and auto-starts
+3. Open Command Prompt or PowerShell:
+   ollama pull gemma4
 ```
 
 ### 3. Run FileSage
 
+**macOS / Linux:**
 ```bash
 chmod +x run.sh
 ./run.sh
 ```
 
-That's it. The script auto-creates a virtual environment and installs all dependencies on first run.
+**Windows:**
+```
+Double-click run.bat
+— or —
+Open Command Prompt in the project folder and run:
+  run.bat
+```
+
+The launcher auto-creates a virtual environment and installs all dependencies on first run.
 
 ---
 
@@ -90,29 +118,19 @@ That's it. The script auto-creates a virtual environment and installs all depend
 
 ### 🦙 Ollama (Local — Recommended)
 
-No API key needed. Runs entirely on your Mac. Your files never leave your machine.
-
-1. Install Ollama: [ollama.ai](https://ollama.ai)
-2. Pull a model (see table below)
-3. In FileSage → **AI Analysis** → select **Ollama** → click **Connect**
+No API key needed. Runs entirely on your machine. Files never leave your device.
 
 **Recommended models for file organization:**
 
 | Model | Pull Command | Size | Speed | Notes |
 |---|---|---|---|---|
-| **gemma4** ⭐ | `ollama pull gemma4` | ~5GB | ⚡ Fast | Best overall — great reasoning and JSON output |
+| **gemma4** ⭐ | `ollama pull gemma4` | ~5GB | ⚡ Fast | Best overall — great reasoning and JSON |
 | `qwen2.5:7b` | `ollama pull qwen2.5:7b` | 4.7GB | ⚡ Fast | Excellent structured output |
 | `llama3.2` | `ollama pull llama3.2` | 2GB | ⚡ Very fast | Lighter option, still solid |
 | `llama3.1:8b` | `ollama pull llama3.1:8b` | 4.7GB | Medium | Very capable |
 | `mistral` | `ollama pull mistral` | 4.1GB | ⚡ Fast | Good balance |
 
 > **Recommended:** `gemma4` — as shown in the screenshot, it handles mixed file types and produces clear, descriptive folder suggestions.
-
-```bash
-# Quick setup:
-ollama pull gemma4
-ollama serve
-```
 
 ---
 
@@ -140,12 +158,10 @@ ollama serve
 
 ## How to Use
 
-### Step-by-step workflow
-
 ```
-1. Launch FileSage  →  ./run.sh
+1. Launch FileSage  →  ./run.sh  (or run.bat on Windows)
          ↓
-2. Dashboard → type or browse to a folder → "Quick Scan"
+2. Dashboard → browse to a folder → "Quick Scan"
          ↓
 3. FileSage indexes all files
    (reads names, parent folder, up to 200 chars of text content)
@@ -155,37 +171,46 @@ ollama serve
 5. Watch the live streaming log as AI processes files in batches of 20
          ↓
 6. File Manager → review suggestions
-   (green → arrows show the AI-suggested new path + reason)
+   (green arrows show the AI-suggested new path + reason)
          ↓
-7. Select files → "Preview Move" to dry-run with no changes
+7. Select files → "Preview Move" to dry-run with zero changes made
          ↓
 8. "Move Selected" → confirm → done ✓
          ↓
-9. Activity Log → full history, double-click any row → Reveal in Finder
+9. Activity Log → full history, double-click any row → reveal in file browser
 ```
 
 ### Tips
 
 - **Select specific files before analyzing** — the AI only processes your selection, saving time on large folders
-- **Always Preview first** — "Preview Move" shows a complete dry run; zero files are touched
+- **Always Preview first** — zero files are touched until you confirm Move
 - **Large folders** — files are processed in batches of 20; the live log shows each batch completing
 - **Sessions persist** — close and reopen FileSage anytime, your analysis is still there
-- **Multiple sessions** — scan different folders independently and switch between them in the sidebar
-- **Gemma4 tip** — it performs best when files have meaningful names or readable content
+- **Gemma4 tip** — performs best when files have meaningful names or readable text content
 
 ---
 
-## Build a Standalone .app
+## Build a Standalone Executable
 
-Create a proper macOS `.app` bundle that anyone can run without Python:
-
+**macOS — `.app` bundle:**
 ```bash
 chmod +x build_mac.sh
 ./build_mac.sh
-
-# Install to Applications:
 cp -r dist/FileSage.app /Applications/
-open /Applications/FileSage.app
+```
+
+**Windows — `.exe` (requires PyInstaller):**
+```bat
+pip install pyinstaller
+pyinstaller --name FileSage --windowed --onedir --noconfirm main.py
+:: Executable will be at dist\FileSage\FileSage.exe
+```
+
+**Linux — standalone binary:**
+```bash
+pip install pyinstaller
+pyinstaller --name filesage --windowed --onedir --noconfirm main.py
+# Binary at dist/filesage/filesage
 ```
 
 ---
@@ -193,13 +218,14 @@ open /Applications/FileSage.app
 ## Project Structure
 
 ```
-filesage/
+FileSage-AI-File-Manager/
 ├── main.py               # Full PyQt6 UI — 5 pages, sidebar navigation
 ├── core.py               # SQLite database, file scanner, move engine
 ├── workers.py            # Background QThreads (scan + AI streaming)
 ├── requirements.txt      # PyQt6, requests
-├── run.sh                # One-command launcher with auto venv setup
-├── build_mac.sh          # Builds FileSage.app via PyInstaller
+├── run.sh                # Launcher for macOS / Linux
+├── run.bat               # Launcher for Windows
+├── build_mac.sh          # Builds FileSage.app via PyInstaller (macOS)
 ├── docs/
 │   └── screenshot.png    # App screenshot
 ├── .github/
@@ -213,25 +239,23 @@ filesage/
 ### Architecture
 
 ```
-FileSage (PyQt6 native macOS app)
+FileSage (PyQt6 — cross-platform native UI)
 │
 ├── MainWindow
 │   ├── Sidebar            — navigation + session list + progress bar
 │   ├── DashboardPage      — stat cards, folder cards, sessions table
 │   ├── FileManagerPage    — file list/grid, filters, select-all, move
 │   ├── AIAnalysisPage     — provider cards, config, streaming log
-│   ├── ActivityPage       — move history table, Reveal in Finder
+│   ├── ActivityPage       — move history, reveal in file browser
 │   └── SettingsPage       — storage path, cache, default folder
 │
-├── ScanWorker  (QThread)
-│   └── Walks directory tree → reads previews → writes to SQLite
-│
-└── AnalyzeWorker  (QThread)
-    ├── Ollama    — POST /api/generate  (streaming, local, private)
-    ├── OpenAI    — POST /v1/chat/completions  (SSE streaming)
-    └── Anthropic — POST /v1/messages  (SSE streaming)
+├── ScanWorker  (QThread)  — non-blocking file indexing
+└── AnalyzeWorker (QThread)
+    ├── Ollama    — /api/generate streaming (local)
+    ├── OpenAI    — /v1/chat/completions SSE streaming
+    └── Anthropic — /v1/messages SSE streaming
 
-Persistent storage: ~/.filesage/filesage.db  (SQLite)
+Storage: ~/.filesage/filesage.db  (SQLite, cross-platform)
 ```
 
 ---
@@ -240,92 +264,111 @@ Persistent storage: ~/.filesage/filesage.db  (SQLite)
 
 | Provider | What is sent | Where |
 |---|---|---|
-| **Ollama** | Nothing — runs 100% locally | Your Mac only |
-| **ChatGPT** | File names, folder names, ≤200 chars of text content per file | OpenAI API |
-| **Claude** | File names, folder names, ≤200 chars of text content per file | Anthropic API |
+| **Ollama** | Nothing — 100% local | Your machine only |
+| **ChatGPT** | File names, folder names, ≤200 chars of text per file | OpenAI API |
+| **Claude** | File names, folder names, ≤200 chars of text per file | Anthropic API |
 
-**Full file contents are never sent.** Only short previews are used for context.
-
-The local cache (`~/.filesage/filesage.db`) stores session data, file paths, and AI suggestions. Clear it anytime from **Settings → Clear All Data**.
+Full file contents are **never** sent. Only short previews are used for context.
 
 ---
 
 ## Troubleshooting
 
-### App won't launch
+### macOS
 
 ```bash
-# Check Python version (need 3.9+)
-python3 --version
+# Font warning in terminal — harmless, filtered by run.sh
+# SSL warning — harmless, suppressed automatically
 
-# Install newer Python via Homebrew
-brew install python@3.11
-
-# Delete venv and retry
-rm -rf .venv && ./run.sh
+# App won't start — check Python version
+python3 --version        # need 3.9+
+brew install python@3.11 # upgrade if needed
+rm -rf .venv && ./run.sh # fresh install
 ```
 
-### Ollama won't connect
-
 ```bash
-# Start Ollama
+# Ollama won't connect
 ollama serve
-
-# Verify it's running
 curl http://localhost:11434/api/tags
-
-# Check models are installed
 ollama list
-
-# Pull gemma4 if missing
 ollama pull gemma4
 ```
 
-### Analysis returns no suggestions
+---
 
-- Make sure the model is fully downloaded (`ollama list` should show it)
-- Try a smaller batch: select 5–10 files manually and analyze just those
-- Check the live log in AI Analysis for error messages
-- `gemma4` and `qwen2.5:7b` are the most reliable at producing valid JSON
+### Windows
 
-### "No module named PyQt6"
+```bat
+:: Python not found — install from python.org
+:: Make sure "Add Python to PATH" is checked during install
 
-```bash
-rm -rf .venv && ./run.sh
+:: Verify Python is on PATH
+python --version
+
+:: Fresh install
+rmdir /s /q .venv
+run.bat
+
+:: Ollama not connecting — make sure Ollama is running
+:: Check system tray for the Ollama icon
+:: Or open PowerShell and run: ollama serve
 ```
 
-### TypeError / unexpected keyword argument
+**Windows-specific notes:**
+- Use `run.bat` — not `run.sh` (unless you have WSL or Git Bash)
+- PyQt6 requires the [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe) — install it if the app fails to start
+- "Reveal in Explorer" opens the file's parent folder with the file selected
 
-You likely have a mix of old and new files. Re-download all files from the repo and replace them together — `main.py`, `workers.py`, and `core.py` must all be from the same version.
+---
 
-### Font warnings in terminal (`Populating font family aliases`)
-
-Harmless — Qt builds its font cache on first launch. The warning is automatically filtered by `run.sh`.
-
-### urllib3 SSL warning
-
-Harmless — Python 3.9 on older macOS uses LibreSSL. Automatically suppressed by `run.sh` and the warning filter in `main.py`.
-
-### Build fails (`build_mac.sh`)
+### Linux
 
 ```bash
-# Install Xcode command line tools first
-xcode-select --install
+# Install Python and pip
+sudo apt install python3 python3-pip python3-venv   # Ubuntu/Debian
+sudo dnf install python3 python3-pip                # Fedora
+sudo pacman -S python python-pip                    # Arch
 
-# Then retry
-./build_mac.sh
+# PyQt6 may need system Qt libraries on some distros
+sudo apt install libgl1 libegl1                     # Ubuntu/Debian
+
+# Run
+chmod +x run.sh && ./run.sh
+
+# Ollama on Linux
+curl -fsSL https://ollama.ai/install.sh | sh
+ollama pull gemma4
+ollama serve
 ```
+
+**Linux-specific notes:**
+- "Reveal in Finder" opens the file's parent folder using `xdg-open`
+- On headless servers, PyQt6 requires a display (use a desktop environment or Xvfb)
+- Font rendering uses Ubuntu or DejaVu Sans automatically
+
+---
+
+### All Platforms
+
+| Problem | Fix |
+|---|---|
+| `No module named PyQt6` | `rm -rf .venv` then re-run launcher |
+| `TypeError: unexpected keyword argument` | All three files (`main.py`, `workers.py`, `core.py`) must be from the same version |
+| Analysis returns no suggestions | Try with 5–10 selected files first; check the live log for errors |
+| `gemma4` not found | `ollama pull gemma4` then restart Ollama |
+| Build fails | Install PyInstaller: `pip install pyinstaller` |
 
 ---
 
 ## Contributing
 
-Pull requests welcome! Please open an issue first for major changes.
+Pull requests welcome. Please open an issue first for major changes.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/filesage.git
-cd filesage
-./run.sh    # runs directly from source, no build step needed
+git clone https://github.com/manojbarot1/FileSage-AI-File-Manager.git
+cd FileSage-AI-File-Manager
+./run.sh      # macOS / Linux
+# run.bat     # Windows
 ```
 
 ---
@@ -339,5 +382,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 <div align="center">
 
 Built with ❤️ using [PyQt6](https://riverbankcomputing.com/software/pyqt/) · [Ollama](https://ollama.ai) · [Gemma4](https://ollama.com/library/gemma4) · [OpenAI](https://openai.com) · [Anthropic](https://anthropic.com)
+
+**macOS · Windows · Linux**
 
 </div>
